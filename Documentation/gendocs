@@ -1,9 +1,11 @@
 #! /bin/sh
 
-if [ -e Documentation ]
+if [ -e Reference ]
 then
-	rm -r Documentation
+	rm -r Reference
 fi
 
-headerdoc2html -u -t -o Documentation KeyNaming.h
-gatherheaderdoc Documentation/ KeyNaming.html
+headerdoc2html -u -t -o Reference ../KeyNaming.h
+#gatherheaderdoc Reference/ KeyNaming.html
+cd Reference
+ln -s KeyNaming/index.html KeyNaming.html
