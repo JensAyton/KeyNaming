@@ -7,6 +7,3 @@ fi
 
 headerdoc2html -u -t -o Documentation KeyNaming.h
 gatherheaderdoc Documentation/ KeyNaming.html
-
-#rm Documentation/MasterTOC.html
-#ln -s KeyNaming/index.html Documentation/index.html
