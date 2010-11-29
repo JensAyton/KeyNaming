@@ -1,0 +1,3 @@
+Like UCKeyTranslate(), but much less scary. 
+
+The KeyNaming library converts virtual key codes (as provided by the various event systems) or HID usages codes (as provided by IOKit’s HID interface) to descriptive strings reflecting the current keyboard layout.

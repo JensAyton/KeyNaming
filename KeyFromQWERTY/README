@@ -1,0 +1,4 @@
+A pair of macros to convert characters to virtual key codes at compile time,
+for defining defaults.
+
+For more information, see http://jens.ayton.se/blag/key-to-qwerty/
