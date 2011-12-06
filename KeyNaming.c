@@ -638,6 +638,8 @@ CFStringRef KeyNamingCopyKeyNames(uint32_t inCount, const uint16_t * const inVir
 	
 	for (iter = 0; iter != inCount; ++iter)
 	{
+        CFStringRef			curr;
+
 		if (0 != iter)
 		{
 			CFStringAppend(result, kSeparator);
@@ -735,7 +737,6 @@ CFStringRef KeyNamingCopyKeyNamesHID(uint32_t inCount, const int32_t * const inU
 	OSStatus			err = noErr;
 	uint32_t			iter;
 	CFMutableStringRef	result = NULL;
-	CFStringRef			curr;
 	StateCache			state;
 	int32_t				usage;
 	uint16_t			vkc;
@@ -768,7 +769,9 @@ CFStringRef KeyNamingCopyKeyNamesHID(uint32_t inCount, const int32_t * const inU
 				CFRelease(curr);
 				curr = NULL;
 			}
-		}
+		} else {
+            curr = NULL;
+        }
 		
 		if (NULL == curr)
 		{
@@ -797,7 +800,6 @@ CFArrayRef KeyNamingCopyKeyNamesAsArrayHID(uint32_t inCount, const int32_t * con
 	OSStatus			err = noErr;
 	uint32_t			iter;
 	CFMutableArrayRef	result = NULL;
-	CFStringRef			curr;
 	StateCache			state;
 	int32_t				usage;
 	uint16_t			vkc;
@@ -812,6 +814,8 @@ CFArrayRef KeyNamingCopyKeyNamesAsArrayHID(uint32_t inCount, const int32_t * con
 	
 	for (iter = 0; iter != inCount; ++iter)
 	{
+        CFStringRef			curr;
+
 		usage = inUsages[iter];
 		if (usage < 0 || kHID2VKCSize <= usage) vkc = kVKC_Unknown;
 		else vkc = kHID2VKC[usage];
@@ -825,7 +829,9 @@ CFArrayRef KeyNamingCopyKeyNamesAsArrayHID(uint32_t inCount, const int32_t * con
 				CFRelease(curr);
 				curr = NULL;
 			}
-		}
+		} else {
+            curr = NULL;
+        }
 		
 		if (NULL == curr)
 		{
