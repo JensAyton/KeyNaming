@@ -998,8 +998,14 @@ static OSStatus NameOneKey(uint16_t inVKeyCode, CFStringRef *outString, const St
 	{
 		result = CopyLocalizedString(special);
 	}
+    
+    if (NULL != result && CFEqual(CFSTR(""), result))
+    {
+        CFRelease(result);
+        result = NULL;
+    }
 	
-	if (NULL == result || CFEqual(CFSTR(""), result))
+	if (NULL == result)
 	{
 		/*	Generic handling
 			  If there's a 'uchr' resource for the key script, we use UCKeyTranslate to create a
@@ -1054,7 +1060,7 @@ static OSStatus NameOneKey(uint16_t inVKeyCode, CFStringRef *outString, const St
 		CFStringRef keypad_X;
 		keypad_X = CopyLocalizedString(kKey_Keypad_X);
 		
-		if (keypad_X)
+		if (keypad_X && result)
 		{
 			CFStringRef temp = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, keypad_X, result);
 			if (temp)
@@ -1063,6 +1069,9 @@ static OSStatus NameOneKey(uint16_t inVKeyCode, CFStringRef *outString, const St
 				result = temp;
 			}
 		}
+        
+        if (keypad_X)
+            CFRelease(keypad_X);
 	}
 	
 	if (result)
