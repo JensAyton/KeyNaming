@@ -1102,6 +1102,7 @@ void KeyNamingSetStringTable(CFStringRef inTableName)
 void KeyNamingSetStringTableAndBundle(CFStringRef inTableName, CFBundleRef inBundle)
 {
 	if (NULL != inTableName) CFRetain(inTableName);	/* NULL is OK; we'll re-init to "KeyNaming" in InitCache */
+	if (NULL != inBundle) CFRetain(inBundle);	    /* NULL is OK; we'll re-init to "KeyNaming" in InitCache */
 	if (NULL != sStringTable) CFRelease(sStringTable);
 	if (NULL != sStringBundle) CFRelease(sStringBundle);
 	if (NULL != sUnknownCodeString)
