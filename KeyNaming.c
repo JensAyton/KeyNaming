@@ -638,6 +638,8 @@ CFStringRef KeyNamingCopyKeyNames(uint32_t inCount, const uint16_t * const inVir
 	
 	for (iter = 0; iter != inCount; ++iter)
 	{
+        CFStringRef			curr;
+
 		if (0 != iter)
 		{
 			CFStringAppend(result, kSeparator);
@@ -735,7 +737,6 @@ CFStringRef KeyNamingCopyKeyNamesHID(uint32_t inCount, const int32_t * const inU
 	OSStatus			err = noErr;
 	uint32_t			iter;
 	CFMutableStringRef	result = NULL;
-	CFStringRef			curr;
 	StateCache			state;
 	int32_t				usage;
 	uint16_t			vkc;
@@ -768,7 +769,9 @@ CFStringRef KeyNamingCopyKeyNamesHID(uint32_t inCount, const int32_t * const inU
 				CFRelease(curr);
 				curr = NULL;
 			}
-		}
+		} else {
+            curr = NULL;
+        }
 		
 		if (NULL == curr)
 		{
@@ -797,7 +800,6 @@ CFArrayRef KeyNamingCopyKeyNamesAsArrayHID(uint32_t inCount, const int32_t * con
 	OSStatus			err = noErr;
 	uint32_t			iter;
 	CFMutableArrayRef	result = NULL;
-	CFStringRef			curr;
 	StateCache			state;
 	int32_t				usage;
 	uint16_t			vkc;
@@ -812,6 +814,8 @@ CFArrayRef KeyNamingCopyKeyNamesAsArrayHID(uint32_t inCount, const int32_t * con
 	
 	for (iter = 0; iter != inCount; ++iter)
 	{
+        CFStringRef			curr;
+
 		usage = inUsages[iter];
 		if (usage < 0 || kHID2VKCSize <= usage) vkc = kVKC_Unknown;
 		else vkc = kHID2VKC[usage];
@@ -825,7 +829,9 @@ CFArrayRef KeyNamingCopyKeyNamesAsArrayHID(uint32_t inCount, const int32_t * con
 				CFRelease(curr);
 				curr = NULL;
 			}
-		}
+		} else {
+            curr = NULL;
+        }
 		
 		if (NULL == curr)
 		{
@@ -992,8 +998,14 @@ static OSStatus NameOneKey(uint16_t inVKeyCode, CFStringRef *outString, const St
 	{
 		result = CopyLocalizedString(special);
 	}
+    
+    if (NULL != result && CFEqual(CFSTR(""), result))
+    {
+        CFRelease(result);
+        result = NULL;
+    }
 	
-	if (NULL == result || CFEqual(CFSTR(""), result))
+	if (NULL == result)
 	{
 		/*	Generic handling
 			  If there's a 'uchr' resource for the key script, we use UCKeyTranslate to create a
@@ -1048,7 +1060,7 @@ static OSStatus NameOneKey(uint16_t inVKeyCode, CFStringRef *outString, const St
 		CFStringRef keypad_X;
 		keypad_X = CopyLocalizedString(kKey_Keypad_X);
 		
-		if (keypad_X)
+		if (keypad_X && result)
 		{
 			CFStringRef temp = CFStringCreateWithFormat(kCFAllocatorDefault, NULL, keypad_X, result);
 			if (temp)
@@ -1057,6 +1069,9 @@ static OSStatus NameOneKey(uint16_t inVKeyCode, CFStringRef *outString, const St
 				result = temp;
 			}
 		}
+        
+        if (keypad_X)
+            CFRelease(keypad_X);
 	}
 	
 	if (result)
@@ -1087,6 +1102,7 @@ void KeyNamingSetStringTable(CFStringRef inTableName)
 void KeyNamingSetStringTableAndBundle(CFStringRef inTableName, CFBundleRef inBundle)
 {
 	if (NULL != inTableName) CFRetain(inTableName);	/* NULL is OK; we'll re-init to "KeyNaming" in InitCache */
+	if (NULL != inBundle) CFRetain(inBundle);	    /* NULL is OK; we'll re-init to "KeyNaming" in InitCache */
 	if (NULL != sStringTable) CFRelease(sStringTable);
 	if (NULL != sStringBundle) CFRelease(sStringBundle);
 	if (NULL != sUnknownCodeString)
